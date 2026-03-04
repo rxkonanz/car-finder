@@ -16,7 +16,8 @@ import { BudgetQuestion } from "./questions/BudgetQuestion";
 import { ZipQuestion } from "./questions/ZipQuestion";
 import { LoadingScreen } from "@/components/results/LoadingScreen";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { utagLink } from "@/lib/tealium";
 
 const QUESTION_COMPONENTS = [
   LifestyleQuestion,
@@ -50,10 +51,27 @@ export function QuizShell() {
   const question = QUESTIONS[currentStep - 1];
   const QuestionComponent = QUESTION_COMPONENTS[currentStep - 1];
 
+  const prevStepRef = useRef(currentStep);
+  const prevStatusRef = useRef(status);
+
+  // Fire car_q{N} when the user advances forward through questions 1–7
   useEffect(() => {
+    if (currentStep > prevStepRef.current) {
+      utagLink({ tealium_event: `car_q${prevStepRef.current}` });
+    }
+    prevStepRef.current = currentStep;
+  }, [currentStep]);
+
+  // Fire car_q8 on submission, car_completed on success, then navigate
+  useEffect(() => {
+    if (status === "loading" && prevStatusRef.current === "idle") {
+      utagLink({ tealium_event: "car_q8" });
+    }
     if (status === "success" && recommendations) {
+      utagLink({ tealium_event: "car_completed" });
       router.push("/results");
     }
+    prevStatusRef.current = status;
   }, [status, recommendations, router]);
 
   if (status === "loading") {

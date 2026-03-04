@@ -12,6 +12,28 @@ export interface ListingsQuery {
 
 // ─── Stub data ───────────────────────────────────────────────────────────────
 
+function buildSearchUrls(query: ListingsQuery): { carscom: string; autotrader: string; cargurus: string } {
+  const make = query.make.toLowerCase();
+  const model = query.model.toLowerCase().replace(/\s+/g, "-");
+  const stockType = query.condition === "new" ? "new" : query.condition === "cpo" ? "certified" : "used";
+
+  const carscom =
+    `https://www.cars.com/shopping/results/?makes[]=${make}&models[]=${make}-${model}` +
+    `&year_min=${query.yearMin}&year_max=${query.yearMax}&zip=${query.zip}` +
+    `&maximum_distance=50&stock_type=${stockType}`;
+
+  const autotrader =
+    `https://www.autotrader.com/cars-for-sale/${stockType === "certified" ? "certified-used-cars" : stockType === "new" ? "new-cars" : "used-cars"}` +
+    `/${make}/${model}?zip=${query.zip}&startYear=${query.yearMin}&endYear=${query.yearMax}&searchRadius=50`;
+
+  const cargurus =
+    `https://www.cargurus.com/Cars/new/nl#listing=&zip=${query.zip}` +
+    `&distance=50&trim=&minYear=${query.yearMin}&maxYear=${query.yearMax}` +
+    `&entitySelectingHelper.selectedEntity=${query.make}%20${query.model}`;
+
+  return { carscom, autotrader, cargurus };
+}
+
 function makeStubListings(query: ListingsQuery): Listing[] {
   const colors = ["Midnight Black", "Pearl White", "Silver", "Deep Blue", "Titanium Gray"];
   const dealers: Dealer[] = [
@@ -54,6 +76,8 @@ function makeStubListings(query: ListingsQuery): Listing[] {
   ];
 
   const basePrices = [26900, 29500, 31200, 34800, 28700, 33400];
+  const searchUrls = buildSearchUrls(query);
+  const urlPool = [searchUrls.carscom, searchUrls.autotrader, searchUrls.cargurus];
 
   return Array.from({ length: 6 }, (_, i) => {
     const dealer = dealers[i % dealers.length];
@@ -76,7 +100,7 @@ function makeStubListings(query: ListingsQuery): Listing[] {
       stockNumber: `S${10000 + i}`,
       condition: isNew ? "new" : isCpo ? "cpo" : "used",
       dealer,
-      vdpUrl: `https://www.cars.com/vehicledetail/stub-${i + 1}/`,
+      vdpUrl: urlPool[i % urlPool.length],
       imageUrl: null,
       daysOnMarket: isNew ? 0 : 5 + i * 7,
     };

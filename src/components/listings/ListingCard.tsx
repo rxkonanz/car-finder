@@ -5,6 +5,7 @@ import { MapPin, ExternalLink, Clock, Gauge } from "lucide-react";
 import type { Listing } from "@/types/listings";
 import { formatPrice } from "@/lib/utils";
 import { cn } from "@/lib/utils";
+import { utagLink } from "@/lib/tealium";
 
 interface ListingCardProps {
   listing: Listing;
@@ -33,6 +34,7 @@ export function ListingCard({ listing, index }: ListingCardProps) {
         rel="noopener noreferrer"
         className="block bg-zinc-900 border border-zinc-800 rounded-2xl p-4 hover:border-zinc-600 hover:bg-zinc-800/60 transition-all duration-150 group"
         aria-label={`View ${listing.year} ${listing.make} ${listing.model} at ${listing.dealer.name}`}
+        onClick={() => utagLink({ tealium_event: "car_listing_click", car_url: listing.vdpUrl })}
       >
         <div className="flex items-start justify-between gap-3 mb-3">
           <div>

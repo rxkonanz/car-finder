@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, Sparkles, MapPin } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 
 const FEATURES = [
   {
@@ -22,18 +22,6 @@ const FEATURES = [
   },
 ];
 
-const TESTIMONIALS = [
-  {
-    quote: "I had no idea what I needed. This nailed it — bought my first SUV and love it.",
-    name: "Sarah M.",
-    city: "Austin, TX",
-  },
-  {
-    quote: "Saved me hours of research. The top match was exactly right for my commute.",
-    name: "James K.",
-    city: "Denver, CO",
-  },
-];
 
 export default function HomePage() {
   return (
@@ -156,37 +144,6 @@ export default function HomePage() {
                 <div>
                   <div className="font-semibold text-zinc-200 text-sm">{item.title}</div>
                   <div className="text-zinc-500 text-sm leading-relaxed">{item.desc}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Testimonials */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.4 }}
-          className="mb-16"
-        >
-          <h2 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-5">
-            What people say
-          </h2>
-          <div className="space-y-4">
-            {TESTIMONIALS.map((t, i) => (
-              <div key={i} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4">
-                <p className="text-zinc-300 text-sm leading-relaxed mb-3">&ldquo;{t.quote}&rdquo;</p>
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-full bg-zinc-700 flex items-center justify-center text-xs font-bold text-zinc-300">
-                    {t.name[0]}
-                  </div>
-                  <div>
-                    <div className="text-zinc-300 text-xs font-semibold">{t.name}</div>
-                    <div className="text-zinc-600 text-xs flex items-center gap-1">
-                      <MapPin size={9} />
-                      {t.city}
-                    </div>
-                  </div>
                 </div>
               </div>
             ))}

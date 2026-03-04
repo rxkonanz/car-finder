@@ -7,12 +7,18 @@ import { RecommendationCard } from "@/components/results/RecommendationCard";
 import { Button } from "@/components/ui/Button";
 import type { CarRecommendation } from "@/types/recommendation";
 import { RotateCcw, ChevronLeft } from "lucide-react";
-import Link from "next/link";
+import { useQuizStore } from "@/hooks/useQuizStore";
 
 export default function ResultsPage() {
   const router = useRouter();
+  const reset = useQuizStore((s) => s.reset);
   const [recommendations, setRecommendations] = useState<CarRecommendation[] | null>(null);
   const [mounted, setMounted] = useState(false);
+
+  const handleRestart = () => {
+    reset();
+    router.push("/quiz");
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -41,17 +47,17 @@ export default function ResultsPage() {
       {/* Header */}
       <div className="sticky top-0 z-10 bg-zinc-950/90 backdrop-blur-sm border-b border-zinc-800/50 px-4 py-3">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
-          <Link href="/quiz" className="flex items-center gap-1.5 text-zinc-400 hover:text-zinc-200 text-sm transition-colors">
+          <button onClick={handleRestart} className="flex items-center gap-1.5 text-zinc-400 hover:text-zinc-200 text-sm transition-colors">
             <ChevronLeft size={16} />
             Back to quiz
-          </Link>
-          <Link
-            href="/quiz"
+          </button>
+          <button
+            onClick={handleRestart}
             className="flex items-center gap-1.5 text-zinc-400 hover:text-zinc-200 text-sm transition-colors"
           >
             <RotateCcw size={14} />
             Start over
-          </Link>
+          </button>
         </div>
       </div>
 
@@ -89,7 +95,7 @@ export default function ResultsPage() {
           <Button
             variant="outline"
             size="md"
-            onClick={() => router.push("/")}
+            onClick={handleRestart}
             className="gap-2"
           >
             <RotateCcw size={15} />
